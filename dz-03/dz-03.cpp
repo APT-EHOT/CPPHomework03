@@ -78,7 +78,7 @@ void task4() {
 
 			for (int i = 0; i < line.size(); i++) {
 
-				if ( (line[i] == ' ') || ( ( line[i] >= '0') && (line[i] <= '9') ) ) {
+				if ( (line[i] == ' ') || (line[i] == '.') || (line[i] == '-') || ( ( line[i] >= '0') && (line[i] <= '9') ) ) {
 					lineFormatted += line[i];
 				}
 			}
@@ -93,7 +93,7 @@ void task4() {
 	}
 }
 
-
+char unsorted[30];
 int task5comparator(const void* a, const void* b) {
 	const char* x = (char*)a;
 	const char* y = (char*)b;
@@ -104,17 +104,51 @@ int task5comparator(const void* a, const void* b) {
 		return -1;
 	return 0;
 }
-void task5() {
-	string input = "sutnzoahwefjgasdbjsadhgwxqeir";
-	cout << "Изначальная строка: " << input << "\n";
-	char letters[30];
-	for (int i = 0; i < 30; i++) {
-		letters[i] = input[i];
+void quickSort(char* letters, int left, int right)
+{
+	int pivot; 
+	int l_hold = left; 
+	int r_hold = right; 
+	pivot = letters[left];
+	while (left < right) 
+	{
+		while ((letters[right] >= pivot) && (left < right))
+			right--; 
+		if (left != right) 
+		{
+			letters[left] = letters[right];
+			left++; 
+		}
+		while ((letters[left] <= pivot) && (left < right))
+			left++; 
+		if (left != right) 
+		{
+			letters[right] = letters[left];
+			right--; 
+		}
 	}
-	qsort(letters, 30, sizeof(char), task5comparator);
+	letters[left] = pivot;
+	pivot = left;
+	left = l_hold;
+	right = r_hold;
+	if (left < pivot)
+		quickSort(letters, left, pivot - 1);
+	if (right > pivot)
+		quickSort(letters, pivot + 1, right);
+}
+void task5() {
+	string input = "sutnzoahwefjgasdbjsadhgwxqeirk";
+	cout << "Изначальная строка: " << input << "\n";
+	//char letters[30];
+	for (int i = 0; i < 30; i++) {
+		unsorted[i] = input[i];
+	}
+
+	quickSort(unsorted, 0, input.size() - 1);
+	//qsort(letters, 30, sizeof(char), task5comparator);
 	string output = "";
 	for (int i = 0; i < 30; i++) {
-		output += letters[i];
+		output += unsorted[i];
 	}
 	cout << "Отсортированная строка: " << output << "\n";
 }
